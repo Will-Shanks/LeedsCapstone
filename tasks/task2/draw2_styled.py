@@ -20,8 +20,9 @@ def getColumnDelimiters(fName):
     #load x and y cordinates
     d_f = pd.read_csv(fName, names=['x1', 'x2', 'y1', 'y2'], usecols=[1, 2, 3, 4])
     #get max and min x-values
-    x_min = d_f.x1.min()
-    x_max = d_f.x2.max()
+    x_vals = sorted(d_f.x1.values)
+    x_min = x_vals[int(.01*len(x_vals))]
+    x_max = x_vals[int(.99*len(x_vals))]
     width = x_max - x_min
 
     """ creates dictionary of 200 evenly spaced candidate verticles
