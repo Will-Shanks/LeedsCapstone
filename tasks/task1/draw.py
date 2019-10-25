@@ -39,8 +39,7 @@ def main():
     with open(sys.argv[1], newline='') as fh:
         reader = csv.reader(fh, delimiter=',')
         for line in reader:
-            # get bounding box in sub(?) pixels
-            # TODO convert to pixels
+            # get bounding box
             x1, x2, y1, y2 = [int(i) for i in line[1:5]]
             x1 = x1 * (400/1400)
             x2 = x2 * (400/1400)
@@ -79,9 +78,11 @@ def main():
                                   edgecolor=color,
                                   facecolor='none')
 
+            ax.invert_yaxis()
             ax.add_patch(r)
 
-    plt.axis([minx - 100, maxx + 100, miny - 100, maxy + 100])
+
+    plt.axis([minx - 100, maxx + 100, maxy + 100, miny - 100])
 
     plt.show()
 
