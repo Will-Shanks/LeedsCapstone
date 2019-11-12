@@ -216,7 +216,7 @@ def main():
     df = getCols(df)
     # split into lines
     df = getLines(df)
-
+    """
     df = getWordOrder(df)
     for i in range(df['col'].max() + 1):
         for j in range(df['line'].max() + 1):
@@ -224,17 +224,18 @@ def main():
                                & (df['line'] == j)].iterrows():
                 print(w['text'], end=' ')
             print('')
-        print('\n\n')
+        print('\n')
+    print('\n\n')
     """
     p = draw.Plot()
-    p.setImage(sys.argv[2])
+    if len(sys.argv) == 3:
+        p.setImage(sys.argv[2])
     c = ['b', 'g', 'r', 'c', 'm', 'k', 'w']
     for i, row in df.loc[df['type'] == elemType.line].iterrows():
         p.addRectangle([row['xmin'], row['ymin']], [row['xmax'], row['ymax']],
                        c[i % len(c)])
 
     p.show()
-    """
 
 
 if __name__ == '__main__':
