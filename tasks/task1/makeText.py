@@ -208,24 +208,25 @@ def main():
                       __file__)
         return 1
 
-    # read in .day file
-    df = readDay(sys.argv[1])
-    # set all elements to be words
-    df['type'] = elemType.word
-    # split into columns
-    df = getCols(df)
-    # split into lines
-    df = getLines(df)
-    """
-    df = getWordOrder(df)
-    for i in range(df['col'].max() + 1):
-        for j in range(df['line'].max() + 1):
-            for k, w in df.loc[(df['type'] == elemType.word) & (df['col'] == i)
-                               & (df['line'] == j)].iterrows():
-                print(w['text'], end=' ')
-            print('')
-        print('\n')
-    print('\n\n')
+    for fn in sys.argv[1:]:
+        # read in .day file
+        df = readDay(fn)
+        # set all elements to be words
+        df['type'] = elemType.word
+        # split into columns
+        df = getCols(df)
+        # split into lines
+        df = getLines(df)
+        df = getWordOrder(df)
+        for i in range(df['col'].max() + 1):
+            for j in range(df['line'].max() + 1):
+                for k, w in df.loc[(df['type'] == elemType.word)
+                                   & (df['col'] == i)
+                                   & (df['line'] == j)].iterrows():
+                    print(w['text'], end=' ')
+                print('')
+            print('\n')
+        print('\n\n')
     """
     p = draw.Plot()
     if len(sys.argv) == 3:
@@ -236,6 +237,7 @@ def main():
                        c[i % len(c)])
 
     p.show()
+    """
 
 
 if __name__ == '__main__':
