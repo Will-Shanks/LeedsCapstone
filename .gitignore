@@ -1,4 +1,3 @@
-*.day
 .*
 !/.gitignore
 *.swp
