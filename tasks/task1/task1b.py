@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-
+import sys
 
 def companyname(filepath):
     df = pd.read_csv(filepath, header=0)
@@ -62,4 +62,4 @@ def companyname(filepath):
     print(res)
 
 
-companyname(filepath="OCRoutputIndustrial19300006-001370.day")
+companyname(sys.argv[1])
