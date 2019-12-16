@@ -208,7 +208,7 @@ def main():
                       __file__)
         return 1
 
-    for fn in sys.argv[1:]:
+    for fn in sys.argv[1:]: # for each page
         # read in .day file
         df = readDay(fn)
         # set all elements to be words
@@ -218,9 +218,9 @@ def main():
         # split into lines
         df = getLines(df)
         df = getWordOrder(df)
-        for i in range(df['col'].max() + 1):
-            for j in range(df['line'].max() + 1):
-                for k, w in df.loc[(df['type'] == elemType.word)
+        for i in range(df['col'].max() + 1): #for each col
+            for j in range(df['line'].max() + 1): #for each line
+                for k, w in df.loc[(df['type'] == elemType.word) #print words in a line
                                    & (df['col'] == i)
                                    & (df['line'] == j)].iterrows():
                     print(w['text'], end=' ')
