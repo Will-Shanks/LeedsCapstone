@@ -208,6 +208,8 @@ def main():
                       __file__)
         return 1
 
+    lastline = "MISSED COMPANY NAME"
+    box = None
     for fn in sys.argv[1:]:
         # read in .day file
         df = readDay(fn)
@@ -220,18 +222,33 @@ def main():
         df = getWordOrder(df)
         for i in range(df['col'].max() + 1):
             for j in range(df['line'].max() + 1):
+                l = ''
+                space = ''
                 for k, w in df.loc[(df['type'] == elemType.word)
                                    & (df['col'] == i)
                                    & (df['line'] == j)].iterrows():
-                    print(w['text'], end=' ')
-                print('')
-            print('\n')
-        print('\n\n')
+                    l += space + w['text']
+                    space = ' '
+
+                if l.startswith('History'):
+                    if not box.empty:
+                        print("'"+lastline+"'"+"\t\t({},{}), ({},{})".format(int(box.iloc[0]['xmin']), int(box.iloc[0]['ymin']), int(box.iloc[0]['xmax']), int(box.iloc[0]['ymax']))+" {}".format(fn[fn.find("OCRoutputIndustrial"):][19:34]))
+                    else:
+                        print(lastline)
+                    lastline = "MISSED COMPANY NAME"
+                
+                if l.isupper() and not l.replace(".", "").replace(" ", "").isdigit():
+                    lastline = l
+                    box = df.loc[(df['col'] == i)
+                                   & (df['line'] == j)
+                                   & (df['type'] == elemType.line)]
+
+   
     """
     p = draw.Plot()
     if len(sys.argv) == 3:
         p.setImage(sys.argv[2])
-    c = ['b', 'g', 'r', 'c', 'm', 'k', 'w']
+    c = ['b', 'g', 'r', 'c', 'm', 'k']
     for i, row in df.loc[df['type'] == elemType.line].iterrows():
         p.addRectangle([row['xmin'], row['ymin']], [row['xmax'], row['ymax']],
                        c[i % len(c)])
