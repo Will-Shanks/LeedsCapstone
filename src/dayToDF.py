@@ -182,6 +182,25 @@ def get_df(fn):
     return df
 
 
+def iter_df(df):
+    """
+    generator that iterates row by row over df
+    input: df, containing cols text, word, line, col
+    output: yields strings, each is a line in the df
+    """
+    for i in range(df['col'].max() + 1):
+        col = df[df['col'] == i]
+        for j in range(col['line'].max() + 1):
+            line = col[col['line'] == j]
+            space = ''
+            curLine = ''
+            for k in range(line['word'].max() + 1):
+                word = line[line['word'] == k]
+                curLine += space + word.iloc[0]['text']
+                space = ' '
+            yield curLine
+    
+
 def _main(args):
     """
     Prints out text for all given .day files
@@ -194,19 +213,8 @@ def _main(args):
 
     for fn in args:
         df = get_df(fn)
-        for i in range(df['col'].max() + 1):
-            col = df[df['col'] == i]
-            for j in range(col['line'].max() + 1):
-                line = col[col['line'] == j]
-    #            print(line['word'])
-    #            print("===")
-                space = ''
-                for k in range(line['word'].max() + 1):
-                    word = line[line['word'] == k]
-                    print(space + word.iloc[0]['text'], end='')
-                    space = ' '
-                print('')
-
+        for line in iter_df(df):
+            print(line)
     return 0
 
 #    code to print boxes over .tif file, helpfull for debugging
