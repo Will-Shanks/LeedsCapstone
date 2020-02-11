@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Program generates text files from .day ocr files"""
+"""
+Code to generates a datafram from .day ocr files
+With example code that iterates through lines of the scaned page
+"""
 import logging
 import sys
 

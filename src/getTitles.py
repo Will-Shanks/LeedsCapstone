@@ -1,18 +1,37 @@
 #!/usr/bin/env python3
+"""prints company names in text generated from 1 col pages"""
 
+import logging
 import sys
 
+import dayToDF
 
-def main():
-    with open(sys.argv[1]) as fh:
+
+def main(args):
+    """
+    Prints out company names found in given .day files
+    input: list of filepaths for .day files
+    output: None
+    """
+    # iter over given files
+    for fn in args:
         lastline = "MISSED COMPANY NAME"
-        for line in fh:
-            l = line.strip('\n')
+        # iter over lines in file
+        for line in dayToDF.iter_df(dayToDF.get_df(fn)):
+            # companies have a history section first
             if line.startswith('History'):
-                print("'"+lastline+"'", end=' ')
+                print("'{}'".format(lastline), end=' ')
                 lastline = "MISSED COMPANY NAME"
-            if l.isupper():
-                lastline = l
+                continue
+            # check if line might be a company name
+            table_row = line.replace(".", "").replace(" ", "").isdigit()
+            if line.isupper() and not table_row:
+                lastline = line
+        print("")
+
 
 if __name__ == '__main__':
-    sys.exit(main())
+    if len(sys.argv) < 2:
+        logging.error("Usage: %s DAYFILE [DAYFILE [...]]", __file__)
+        sys.exit(1)
+    sys.exit(main(sys.argv[1:]))

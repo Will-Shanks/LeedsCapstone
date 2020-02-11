@@ -19,8 +19,7 @@ echo date
 for i in $(grep ,1 $DAY_DIR/mastercolumns1930.csv | cut -d',' -f1 | cut -c -23); do
   file=$(find $DAY_DIR -name "OCRoutput"$i"70.day" -type f)
   echo $file":" >> $PROJECT_DIR/output.txt
-  python3 $PROJECT_DIR/src/dayToDF.py $file > /scratch/summit/$USER/tmp.txt
-  python3 $PROJECT_DIR/src/getTitles.py /scratch/summit/$USER/tmp.txt >> $PROJECT_DIR/output.txt
+  python3 $PROJECT_DIR/src/getTitles.py $file >> $PROJECT_DIR/output.txt
 
   echo "" >> /home/wish9643/projects/output.txt
 done
