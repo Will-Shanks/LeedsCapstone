@@ -106,15 +106,18 @@ def _get_lines(df):
         radius = (avg - row['ymin']) * .2
         return avg - radius, avg + radius
 
-    # TODO figure this out again and comment it
     def in_interval(l, miny, maxy):
-        if (l[0] <= miny <= l[1]) and l[1] <= maxy:
+        # word starts before interval, and ends within it
+        if (l[0] <= miny <= l[1]) and maxy >= l[1]:
             return True
+        # word starts in interval, but ends after it
         elif l[0] >= miny and (l[0] <= maxy <= l[1]):
             return True
-        elif l[0] <= miny and l[1] >= maxy:
+        # word starts before interval and ends after it
+        elif l[0] <= miny and maxy <= l[1]:
             return True
-        elif l[0] >= miny and l[1] <= maxy:
+        # word contained in interval
+        elif l[0] >= miny and maxy >= l[1]:
             return True
         return False
 
@@ -184,27 +187,29 @@ def get_df(fn):
 
 def iter_df(df):
     """
-    generator that iterates row by row over df
+    iterator that iterates row by row over df
     input: df, containing cols text, word, line, col
     output: yields strings, each is a line in the df
     """
+    # iter over cols
     for i in range(df['col'].max() + 1):
         col = df[df['col'] == i]
+        # iter over lines
         for j in range(col['line'].max() + 1):
             line = col[col['line'] == j]
-            space = ''
-            curLine = ''
+            # add words to string in order
+            cur_line = line[line['word'] == 0].iloc[0]['text']
             for k in range(line['word'].max() + 1):
                 word = line[line['word'] == k]
-                curLine += space + word.iloc[0]['text']
-                space = ' '
-            yield curLine
-    
+                cur_line += ' ' + word.iloc[0]['text']
+            # return a line at a time
+            yield cur_line
+
 
 def _main(args):
     """
     Prints out text for all given .day files
-    example usage of get_df
+    example usage of get_df and iter_df
     """
     if len(args) < 1:
         logging.error("Usage: %s FILE, where FILE is a .day filepath",
