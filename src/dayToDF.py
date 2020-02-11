@@ -50,41 +50,47 @@ def _get_cols(df):
         col element is in
     """
 
-    # TODO make faster
+    # TODO this function can probably be substantially sped up
 
-    # check all (ish) x values if gap
-    # don't care about ish-ness since gap won't be at edge of page
+    def gaps(df):
+        """
+        All x values not contained in any words
+        e.g. gaps between columns
 
-    # list out all pixels that might contain a gap
-    # can exclude first/last 20 pixels as there won't be a gap that
-    #    close to the edge
-    # TODO fix magic number (20)
-    gaps = list(range(int(df['xmin'].min() + 20), int(df['xmax'].max() - 20)))
+        input: dataframe representing a page, with columns x{min,max}
+        output: list [int] of x values that are not in any words
+        """
+        # know edge of left most word is not a gap, so skip it
+        gaps = list(range(int(df['xmin'].min() + 1), int(df['xmax'].max())))
 
-    # remove each column of pixels where text exists
-    for _, word in df.iterrows():
-        for i in gaps[:]:
-            if word['xmin'] < i < word['xmax']:
-                gaps.remove(i)
-                continue
+        # remove each column of pixels where text exists
+        for _, word in df.iterrows():
+            for i in gaps[:]:
+                if word['xmin'] <= i <= word['xmax']:
+                    gaps.remove(i)
+                    continue
+        return gaps
 
-    # leaving only pixels that are gaps in "gaps"
-
-    intervals = []
-    # set start to left most char on page
-    start = df['xmin'].min()
-    for gap in gaps:
-        # if there is space between start and gap must be a column
-        if start != gap - 1:
-            intervals.append([start, gap])
-        start = gap
-    # append last column
-    intervals.append([start, df['xmax'].max()])
+    def col_edges(df):
+        """
+        Generator of the x min and max that define the edge of a column
+        input: dataframe, with columns x{min,max}
+        output: generator [int, int] x min,max values for a column
+        """
+        # set start to left most char on page
+        start = df['xmin'].min()
+        for gap in gaps(df):
+            # if there is space between start and gap must be a column
+            if start != gap - 1:
+                yield [start, gap]
+            start = gap
+        # append last column
+        yield [start, df['xmax'].max()]
 
     # add col column, with -1 as default
     df['col'] = -1
     # for each column, update col value for words in that column
-    for i, column in enumerate(intervals):
+    for i, column in enumerate(col_edges(df)):
         # iter through words not already assigned to a col
         for j, word in df.loc[df['col'] == -1].iterrows():
             # if word in column, update its col value
@@ -190,7 +196,7 @@ def get_df(fn):
 
 def iter_df(df):
     """
-    iterator that iterates row by row over df
+    Generator that iterates row by row over df
     input: df, containing cols text, word, line, col
     output: yields strings, each is a line in the df
     """
