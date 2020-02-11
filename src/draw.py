@@ -129,6 +129,11 @@ def main():
         print("Usage: {} <OCR .day filepath> [<filepath to page scan>]".format(
             __file__))
         return 1
+    if not sys.argv[1].endswith('.day'):
+        logging.error("Incorrect file format detected")
+        print("Usage: {} <OCR .day filepath> [<filepath to page scan>]"
+              .format(__file__))
+        return 2
     try:
         with open(sys.argv[1], newline='') as fh:
             reader = csv.reader(fh, delimiter=',')
