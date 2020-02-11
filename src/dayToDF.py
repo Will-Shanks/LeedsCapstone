@@ -110,12 +110,25 @@ def _get_lines(df):
         but they are different
     """
 
-    def heights(row):
-        avg = (row['ymin'] + row['ymax']) / 2
-        radius = (avg - row['ymin']) * .2
+    # TODO this function can definetly be improved, does a passible job but
+    # often gets it wrong
+
+    def height(word):
+        """
+        Returns a scaled y min,max value for the given word
+        input: row from dataframe, with columns y{min,max}
+        output: bottom, top (int, int), representing bottom/top of word
+        """
+        avg = (word['ymin'] + word['ymax']) / 2
+        radius = (avg - word['ymin']) * .2
         return avg - radius, avg + radius
 
     def in_interval(l, miny, maxy):
+        """
+        returns if the given {min,max}y fall within the given line
+        input: line [miny, maxy], {min,max}y of word. ([int, int] int, int)
+        output: boolean, true if in interval, else false
+        """
         # word starts before interval, and ends within it
         if (l[0] <= miny <= l[1]) and maxy >= l[1]:
             return True
@@ -139,7 +152,7 @@ def _get_lines(df):
         # iterate over words in column adding words to a line
         for j, word in df.loc[df['col'] == i].iterrows():
             # get y min/max of word
-            miny, maxy = heights(word)
+            miny, maxy = height(word)
             # if word fits in an existing line, update its line value
             for k, l in enumerate(lines):
                 if in_interval(l, miny, maxy):
@@ -230,17 +243,6 @@ def _main(args):
         for line in iter_df(df):
             print(line)
     return 0
-
-#    code to print boxes over .tif file, helpfull for debugging
-#    p = draw.Plot()
-#    if len(sys.argv) == 3:
-#        p.setImage(sys.argv[2])
-#    c = ['b', 'g', 'r', 'c', 'm', 'k']
-#    for i, row in df.loc[df['type'] == elemType.line].iterrows():
-#        p.addRectangle([row['xmin'], row['ymin']], [row['xmax'], row['ymax']],
-#                       c[i % len(c)])
-#
-#    p.show()
 
 
 if __name__ == '__main__':
