@@ -3,7 +3,7 @@
 #SBATCH --ntasks=1
 #SBATCH --time=06:00:00
 #SBATCH --partition=shas
-#BATCH --output=log-%j.out 
+#SBATCH --output=log-%j.out 
 
 DAY_DIR='/scratch/summit/diga9728/Moodys/Industrials/OCRrun1930/' #050/OCRoutputIndustrial19300007-005670.day'
 
@@ -25,5 +25,3 @@ for i in $(grep ,1 $DAY_DIR/mastercolumns1930.csv | cut -d',' -f1 | cut -c -23);
 done
 
 echo date
-
-
