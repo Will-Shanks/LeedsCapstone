@@ -21,6 +21,7 @@ import math
 
 
 def draw_df(col):
+    col = col.copy()
     col.y1 = col.y1.apply(lambda t : -t)
     col.y2 = col.y2.apply(lambda t : -t)
     
@@ -121,7 +122,6 @@ def cluster(scans):
     for i in scans:
         df = df.append(i, ignore_index=True)
 
-    print("big", df.shape)
 
     median_height = statistics.mean(df.apply(lambda t: (t.y2 - t.y1), axis=1).values)
     median_width = statistics.mean(df.apply(lambda t: (t.x2 - t.x1), axis=1).values)  
@@ -178,7 +178,7 @@ def cluster(scans):
         group = group.sort_values(by=['vote_count'], ascending=False)
         final_df = final_df.append(group.head(1), ignore_index=True)
 
-    final_df = final_df.drop(columns=['clust'])
+    final_df = final_df.drop(columns=['clust', 'x_center', 'y_center', 'vote_count'])
     
 
     return final_df
@@ -189,9 +189,6 @@ def cluster(scans):
 def main_sr(files, fname):
    
     scans = []
-
-    print(len(files))
-
 
 
     for f in files[:]:
@@ -212,17 +209,26 @@ def main_sr(files, fname):
         scans.append(d_f)
 
     final_df = cluster(scans)
-
+    cols = ['x1', 'x2', 'y1', 'y2']
+    for i in cols:
+        final_df[i] = final_df[i].apply(lambda t: int(t))
 
     if final_df.shape[0] == 0:
         return
-        
-    final_df.to_csv(fname+"_unified.day")
+
+    #draw_df(final_df)
+    get_end = lambda x: x[x.rindex("/")+1:]
+
+    fname = get_end(fname)
+
+    final_df.to_csv("/projects/reda2367/output/" + fname + "_u.day", header=False, index=False)#where the files write to
 
 
 
 def main():
-    files = os.listdir(os.getcwd())
+    import glob
+
+    files = glob.glob("/scratch/summit/diga9728/Moodys/Industrials/OCRrun1930/*/OCRoutputIndustrial19300015-008*.day")#path of source day here
     files = list(filter(lambda t: ".day" in t, files))
 
     unq_f = set(list(map(lambda t: t.replace(".day", "")[0:-2], files)))
