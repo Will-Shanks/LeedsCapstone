@@ -1,4 +1,5 @@
 .*
+!/.readthedocs.yaml
 !/.gitignore
 !/.gitattributes
 *.swp
