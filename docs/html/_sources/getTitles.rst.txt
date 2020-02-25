@@ -1,0 +1,7 @@
+getTitles module
+================
+
+.. automodule:: getTitles
+   :members:
+   :undoc-members:
+   :show-inheritance:
