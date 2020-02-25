@@ -169,10 +169,13 @@ def _get_lines(df):
 
 
 def _get_word_order(df):
-    """
-    Figures out order of words in each line
-    input: df, requred columns: x{min,max}, line, col
-    output: df, same as input but with added column: word
+    """Figures out order of words in each line
+
+    Args:
+        df (pandas.Dataframe): Requred columns: x{min,max}, line, col
+
+    Returns:
+        pandas.Dataframe: Same as input but with added column: word
     """
     # add word column, with default -1
     df['word'] = -1
@@ -187,14 +190,17 @@ def _get_word_order(df):
 
 
 def get_df(fn):
-    """
-    Reads given day file, and return a dataframe describing it
-    input: filepath(str), path to a .day file
-    output: df, a dataframe describing said .day file
-        with rows: {x,y}{min,max}, col, line, word
-        where col, line, and word give the ordering on the page
-        e.x: col=1,line=2,word=0 is the first word of the third line of
-            the second column
+    """Reads given day file, and return a dataframe describing it
+
+    Args:
+        fn (str): FilePath to a .day file
+
+    Returns:
+        pandas.DataFrame: Dataframe describing said .day file
+            with rows: {x,y}{min,max}, col, line, word
+            where col, line, and word give the ordering on the page
+            e.x: col=1,line=2,word=0 is the first word of the third line of
+                the second column
     """
     # read in .day file
     df = _read_day(fn)
@@ -208,10 +214,13 @@ def get_df(fn):
 
 
 def iter_df(df):
-    """
-    Generator that iterates row by row over df
-    input: df, containing cols text, word, line, col
-    output: yields strings, each is a line in the df
+    """Generator that iterates row by row over df
+
+    Args:
+        df (pandas.DataFrame): Containing columns text, word, line, col
+
+    Yields:
+        str: Each str is a line in the df
     """
     # iter over cols
     for i in range(df['col'].max() + 1):
@@ -229,8 +238,8 @@ def iter_df(df):
 
 
 def _main(args):
-    """
-    Prints out text for all given .day files
+    """Prints out text for all given .day files
+
     example usage of get_df and iter_df
     """
     if len(args) < 1:

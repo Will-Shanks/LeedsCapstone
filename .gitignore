@@ -1,5 +1,5 @@
 .*
-!/.gitignore
+!.gitignore
 !/.gitattributes
 *.swp
 __pycache__

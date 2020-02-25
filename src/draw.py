@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-"""
-This script reads in the given file, and generates a graph of the words in it
-Also contains class Plot, usefull for plotting rectangles
-usage: ./draw.py ocroutput.day [pagescan.tif]
+"""Contains class Plot, usefull for plotting rectangles
+
+Also contains example usage, reads in the given file, and generates a graph of
+the words in it
+
+Example:
+    $ ./draw.py ocroutput.day [pagescan.tif]
 """
 
 import csv
@@ -16,9 +19,10 @@ from PIL import Image
 
 
 class Plot:
-    """
-    Class to manage plotting rectangles
-    optionally plots of an image(if provided)
+    """Manages plotting rectangles
+
+    Note:
+        Optionally plots over an image(if provided)
     """
 
     def __init__(self):
@@ -35,25 +39,23 @@ class Plot:
         self._maxy = 0
 
     def setImage(self, image):
-        """
-        Sets the image for plot to be overlayed over
-        input: str, filepath to image file
-        output: none
+        """Sets the image for plot to be overlayed over
+
+        Args:
+            image (str): Filepath to image file
         """
         logging.info("Adding Image %s to plot", image)
         # FIXME handle case where image exists, but is not a valid image file
         self._image = np.array(Image.open(image), dtype=np.uint8)
 
     def addRectangle(self, p1, p2, color='r'):
-        """
-        adds a rectangle to the plot
-        input:
-            (float, float) [x1, y1]
-            (float, float) [x2, y2]
-                two opposing corners of the rectangle to plot
-            str optional, matplotlib color code to plot draw the rectangle with
-                defaults to red
-        output: none
+        """adds a rectangle to the plot
+
+        Args:
+            p1 ([int, int]): Corner of bounding box, x,y coordinate
+            p2 ([int, int]): Opposite corner from p1
+            color (str, optional): matplotlib color code to plot draw the
+                rectangle with, defaults to red
         """
 
         # make sure x1, y1 is the min corner
@@ -89,7 +91,11 @@ class Plot:
         self._ax.add_patch(r)
 
     def show(self):
-        """"Shows the plot, blocking"""
+        """"Shows the plot
+
+        Warning:
+            Blocking
+        """
         # give ymax first to invert y axis
         plt.axis([
             self._minx - 100, self._maxx + 100, self._maxy + 100,
@@ -102,14 +108,18 @@ class Plot:
         plt.show()
 
     def save(self, filepath):
-        """
-        Save the plot to filepath
-        input: str filepath to save the file at
+        """Save the plot to filepath
+
+        Args:
+        filepath (str):  Filepath to save the file at
+
+        Warning:
+            Not implemented
         """
         raise NotImplementedError
 
 
-def main():
+def _main():
     """
     Graphs the inputed OCR file words
     over an image of the page (if supplied)
@@ -177,4 +187,4 @@ def main():
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
-    sys.exit(main())
+    sys.exit(_main())
