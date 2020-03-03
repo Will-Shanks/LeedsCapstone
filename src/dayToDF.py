@@ -5,7 +5,7 @@ With example code that iterates through lines of the scaned page
 """
 import logging
 import sys
-
+import nav
 import numpy as np
 import pandas as pd
 
@@ -230,11 +230,47 @@ def iter_df(df):
             line = col[col['line'] == j]
             # add words to string in order
             cur_line = line[line['word'] == 0].iloc[0]['text']
-            for k in range(line['word'].max() + 1):
+            for k in range(1, line['word'].max() + 1):
                 word = line[line['word'] == k]
                 cur_line += ' ' + word.iloc[0]['text']
             # return a line at a time
             yield cur_line
+
+
+class DayReader:
+    """Manages complicated day file parsing"""
+    def __init__(self, year):
+        self._year = year
+        self._pages = self._next_page()
+        self._page_name = None
+        self._df = next(self._pages)
+        self._cols = self._df['col'].max()+1
+
+    def lines(self):
+        """iters through line by line, until reach page with different num of cols"""
+        for l in iter_df(self._df):
+            yield l
+        for page in self._pages:
+            self._df = page
+            cols = self._df['col'].max()+1
+            if self._cols != cols:
+                self._cols = cols
+                return
+            for l in iter_df(page):
+                yield l
+        self._cols = None
+        self._page = None
+
+    def cols(self):
+        return self._cols
+
+    def page(self):
+        return self._page_name
+
+    def _next_page(self):
+        for p in nav.pages(self._year):
+            self._page_name = p
+            yield get_df(p)
 
 
 def _main(args):
