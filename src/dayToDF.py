@@ -5,9 +5,11 @@ With example code that iterates through lines of the scaned page
 """
 import logging
 import sys
-import nav
+
 import numpy as np
 import pandas as pd
+
+import nav
 
 # import draw
 
@@ -238,37 +240,80 @@ def iter_df(df):
 
 
 class DayReader:
-    """Manages complicated day file parsing"""
+    """Manages complicated day file parsing
+
+    Can parse through a years day files, splitting by change in # of cols, not
+    page end. This is potentially usefull for parsing, as sometimes a company
+    info wraps to the next page but it does not appear they will wrap to a
+    different column style page
+    """
     def __init__(self, year):
-        self._year = year
-        self._pages = self._next_page()
-        self._page_name = None
-        self._df = next(self._pages)
-        self._cols = self._df['col'].max()+1
+        logging.debug("Creating DayReader for year %s", year)
+        self._year = year  # manual year to look at
+        self._pages = self._next_page()  # page df generator
+        self._page_name = None  # name of current page
+        self._df = next(self._pages)  # current page df
+        self._cols = self._df['col'].max() + 1  # num cols on curr page
 
     def lines(self):
-        """iters through line by line, until reach page with different num of cols"""
+        """yield manual line by line, until change in # of cols
+
+        Yields:
+            str: next line in manual
+
+        Note:
+            When the end of a page is reached, if the next page has a different
+            number of columns this method will return None instead of
+            continuing, but can be called again immediately
+        """
+        # iter over lines in current page
         for l in iter_df(self._df):
             yield l
+        # iter over pages in order
         for page in self._pages:
             self._df = page
-            cols = self._df['col'].max()+1
+            cols = self._df['col'].max() + 1
+            # check if new page has same number of cols as last
             if self._cols != cols:
+                # if it doesn't update self._cols and return
+                logging.debug(
+                    "End of pages with %d columns, next page has %d columns",
+                    self._cols, cols)
                 self._cols = cols
                 return
+            # iter over lines in page
             for l in iter_df(page):
                 yield l
+        # Out of pages, so set everything to None to stop weird behavior
         self._cols = None
-        self._page = None
+        self._page_name = None
+        self._df = None
+        self._pages = None
 
     def cols(self):
+        """Returns the number of columns on the current page
+
+        Returns:
+            int: Number of columns on the current page
+        """
         return self._cols
 
     def page(self):
+        """Returns the current page filepath
+
+        Returns:
+            str: filepath for current page
+        """
         return self._page_name
 
     def _next_page(self):
+        """Moves on to next page in manual
+
+        Returns:
+            Generator[pandas.DataFrame]: each df is the next page in the manual
+        """
         for p in nav.pages(self._year):
+            logging.debug("Moving to next page, %s", p)
             self._page_name = p
             yield get_df(p)
 
