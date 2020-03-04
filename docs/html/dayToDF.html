@@ -4,14 +4,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>dayToDF module &#8212; LeedsCapstone  documentation</title>
+    <title>dayToDF module &#8212; Leeds Capstone  documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
    
@@ -34,6 +34,62 @@
 <span id="daytodf-module"></span><h1>dayToDF module<a class="headerlink" href="#module-dayToDF" title="Permalink to this headline">¶</a></h1>
 <p>Code to generates a datafram from .day ocr files
 With example code that iterates through lines of the scaned page</p>
+<dl class="class">
+<dt id="dayToDF.DayReader">
+<em class="property">class </em><code class="sig-prename descclassname">dayToDF.</code><code class="sig-name descname">DayReader</code><span class="sig-paren">(</span><em class="sig-param">year</em><span class="sig-paren">)</span><a class="headerlink" href="#dayToDF.DayReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Manages complicated day file parsing</p>
+<p>Can parse through a years day files, splitting by change in # of cols, not
+page end. This is potentially usefull for parsing, as sometimes a company
+info wraps to the next page but it does not appear they will wrap to a
+different column style page</p>
+<dl class="method">
+<dt id="dayToDF.DayReader.cols">
+<code class="sig-name descname">cols</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dayToDF.DayReader.cols" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of columns on the current page</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Number of columns on the current page</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dayToDF.DayReader.lines">
+<code class="sig-name descname">lines</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dayToDF.DayReader.lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>yield manual line by line, until change in # of cols</p>
+<dl class="field-list simple">
+<dt class="field-odd">Yields</dt>
+<dd class="field-odd"><p><em>str</em> – next line in manual</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When the end of a page is reached, if the next page has a different
+number of columns this method will return None instead of
+continuing, but can be called again immediately</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="dayToDF.DayReader.page">
+<code class="sig-name descname">page</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dayToDF.DayReader.page" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the current page filepath</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>filepath for current page</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="function">
 <dt id="dayToDF.get_df">
 <code class="sig-prename descclassname">dayToDF.</code><code class="sig-name descname">get_df</code><span class="sig-paren">(</span><em class="sig-param">fn</em><span class="sig-paren">)</span><a class="headerlink" href="#dayToDF.get_df" title="Permalink to this definition">¶</a></dt>
@@ -83,7 +139,7 @@ e.x: col=1,line=2,word=0 is the first word of the third line of</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">LeedsCapstone</a></h1>
+<h1 class="logo"><a href="index.html">Leeds Capstone</a></h1>
 
 
 
@@ -110,7 +166,7 @@ e.x: col=1,line=2,word=0 is the first word of the third line of</p>
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -124,10 +180,10 @@ e.x: col=1,line=2,word=0 is the first word of the third line of</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020, test.
+      &copy;2020, Remy Dahlke, Kevin Eastman, Jie Wang, Joshua Khoo,.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

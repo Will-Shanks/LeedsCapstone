@@ -9,12 +9,13 @@ def get_titles(lines):
 
     Args:
         lines (Generator[str, None, None]): generator that produces the manual
-        line by line
+            line by line
 
     Returns:
         list[str]: list of company names found
 
-    Note: if a name miss is detected "MISSED COMPANY NAME" is added to the
+    Note:
+        If a name miss is detected "MISSED COMPANY NAME" is added to the
         returned name list
     """
     # list of company names to return

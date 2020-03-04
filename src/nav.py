@@ -12,7 +12,8 @@ def pages(year, brightness='70',
 
     Args:
         year (str): year of manuals to iterate through
-        brightness (str):
+        brightness (str, optional): brightness level of day files to use
+        basepath (str, optional): filepath to where dirs with day files are
 
     Yields:
         str: filepath of next page in manual
