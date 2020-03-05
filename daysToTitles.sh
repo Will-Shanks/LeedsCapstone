@@ -16,6 +16,6 @@ rm -f $PROJECT_DIR/output.txt
 
 export PYTHONPATH=$PROJECT_DIR/src:$PYTHONPATH
 
-python3 $PROJECT_DIR/src/getTitles.py 1930 # >> $PROJECT_DIR/output.txt
+python3 $PROJECT_DIR/src/getTitles.py 1930 >> $PROJECT_DIR/output.txt
 
 date
