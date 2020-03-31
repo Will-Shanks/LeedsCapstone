@@ -200,7 +200,7 @@ def get_df(fn):
             with rows: {x,y}{min,max}, col, line, word
             where col, line, and word give the ordering on the page
             e.x: col=1,line=2,word=0 is the first word of the third line of
-                the second column
+            the second column
     """
     # read in .day file
     df = _read_day(fn)
