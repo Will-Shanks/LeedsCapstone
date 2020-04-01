@@ -32,6 +32,8 @@ def _read_day(filepath):
                      })
     # can't work with rows that don't have these things, so drop them
     df.dropna(inplace=True)
+    # cut the edge of the page
+    df = df[df['xmin'] > 1100]
 
     # FIXME find better way to get rid of page title
     df = df.iloc[4:]
@@ -39,6 +41,8 @@ def _read_day(filepath):
     # convert to pixel space
     for col in ['xmin', 'xmax', 'ymin', 'ymax']:
         df[col] *= 400 / 1440
+
+
     return df
 
 
@@ -56,12 +60,12 @@ def _get_cols(df):
         """
         All x values not contained in any words
         e.g. gaps between columns
-
         input: dataframe representing a page, with columns x{min,max}
         output: list [int] of x values that are not in any words
         """
         # know edge of left most word is not a gap, so skip it
-        gaps = list(range(int(df['xmin'].min() + 1), int(df['xmax'].max())))
+        gaps = list(range(int(df['xmin'].min() +1), int(df['xmax'].max())))
+        print(gaps)
 
         # remove each column of pixels where text exists
         for _, word in df.iterrows():
@@ -69,6 +73,8 @@ def _get_cols(df):
                 if word['xmin'] <= i <= word['xmax']:
                     gaps.remove(i)
                     continue
+        #print(gaps)
+        
         return gaps
 
     def col_edges(df):
@@ -96,7 +102,8 @@ def _get_cols(df):
             # if word in column, update its col value
             if word['xmin'] >= column[0] and word['xmax'] <= column[1]:
                 df.loc[j, 'col'] = i
-
+    print(df)
+    print('/n/n/n') 
     return df
 
 
@@ -105,7 +112,6 @@ def _get_lines(df):
     Figures out which line each word is on
     input: df, required columns: y{min,max}, col
     output: df, same as input but with added column: line
-
     lines are defined per column, i.e. there is a line 1 in column 1 and 2,
         but they are different
     """
@@ -164,16 +170,14 @@ def _get_lines(df):
             if df.loc[j, 'line'] == -1:
                 df.loc[j, 'line'] = len(lines)
                 lines.append([miny, maxy])
-
+     
     return df
 
 
 def _get_word_order(df):
     """Figures out order of words in each line
-
     Args:
         df (pandas.Dataframe): Requred columns: x{min,max}, line, col
-
     Returns:
         pandas.Dataframe: Same as input but with added column: word
     """
@@ -191,10 +195,8 @@ def _get_word_order(df):
 
 def get_df(fn):
     """Reads given day file, and return a dataframe describing it
-
     Args:
         fn (str): FilePath to a .day file
-
     Returns:
         pandas.DataFrame: Dataframe describing said .day file
             with rows: {x,y}{min,max}, col, line, word
@@ -215,10 +217,8 @@ def get_df(fn):
 
 def iter_df(df):
     """Generator that iterates row by row over df
-
     Args:
         df (pandas.DataFrame): Containing columns text, word, line, col
-
     Yields:
         str: Each str is a line in the df
     """
@@ -239,7 +239,6 @@ def iter_df(df):
 
 def _main(args):
     """Prints out text for all given .day files
-
     example usage of get_df and iter_df
     """
     if len(args) < 1:
