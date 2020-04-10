@@ -17,6 +17,7 @@ def get_titles(year, basepath=None):
 
     Args:
         year (str): year of the manual to be parsed
+        basepath (str, optional): filepath to look for OCRrun dirs
     """
     # create a day file reader
     dr = None

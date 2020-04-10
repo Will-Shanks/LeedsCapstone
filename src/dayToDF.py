@@ -103,10 +103,10 @@ def _get_cols(df):
     # if they do, are probably mistakes from OCR so drop col
     for i in range(df['col'].max() + 1):
         col = df[df['col'] == i]
-        #FIXME shouldn't use a magic number here
+        # FIXME shouldn't use a magic number here
         if len(col) < 100:
             df = df.drop(col.index)
-            df.loc[df['col'] > i, 'col'] -= 1 
+            df.loc[df['col'] > i, 'col'] -= 1
     return df
 
 
@@ -260,7 +260,7 @@ class DayReader:
     """
     def __init__(self, year, **kwargs):
         logging.debug("Creating DayReader for year %s", year)
-        self._kwargs = kwargs
+        self._kwargs = kwargs  # for passing options to nav
         self._year = year  # manual year to look at
         self._pages = self._next_page()  # page df generator
         self._page_name = None  # name of current page
@@ -269,9 +269,9 @@ class DayReader:
 
     def __iter__(self):
         while self._df is not None:
-            yield self.cols(), self.lines
-    
-    def lines(self):
+            yield self._cols, self._lines
+
+    def _lines(self):
         """yield manual line by line, until change in # of cols
 
         Yields:
@@ -305,14 +305,6 @@ class DayReader:
         self._page_name = None
         self._df = None
         self._pages = None
-
-    def cols(self):
-        """Returns the number of columns on the current page
-
-        Returns:
-            int: Number of columns on the current page
-        """
-        return self._cols
 
     def page(self):
         """Returns the current page filepath
