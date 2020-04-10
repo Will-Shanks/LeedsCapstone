@@ -99,6 +99,14 @@ def _get_cols(df):
             if word['xmin'] >= column[0] and word['xmax'] <= column[1]:
                 df.loc[j, 'col'] = i
 
+    # check if any cols have a really small number of words
+    # if they do, are probably mistakes from OCR so drop col
+    for i in range(df['col'].max() + 1):
+        col = df[df['col'] == i]
+        #FIXME shouldn't use a magic number here
+        if len(col) < 100:
+            df = df.drop(col.index)
+            df.loc[df['col'] > i, 'col'] -= 1 
     return df
 
 
@@ -212,6 +220,9 @@ def get_df(fn):
     df = _get_lines(df)
     # figure out order of words
     df = _get_word_order(df)
+    df = df.astype({'col': 'int32', 'line': 'int32', 'word': 'int32',
+                    'xmin': 'int32', 'xmax': 'int32', 'ymin': 'int32',
+                    'ymax': 'int32', 'text': 'str'})
     return df
 
 
@@ -247,14 +258,19 @@ class DayReader:
     info wraps to the next page but it does not appear they will wrap to a
     different column style page
     """
-    def __init__(self, year):
+    def __init__(self, year, **kwargs):
         logging.debug("Creating DayReader for year %s", year)
+        self._kwargs = kwargs
         self._year = year  # manual year to look at
         self._pages = self._next_page()  # page df generator
         self._page_name = None  # name of current page
         self._df = next(self._pages)  # current page df
         self._cols = self._df['col'].max() + 1  # num cols on curr page
 
+    def __iter__(self):
+        while self._df is not None:
+            yield self.cols(), self.lines
+    
     def lines(self):
         """yield manual line by line, until change in # of cols
 
@@ -312,7 +328,7 @@ class DayReader:
         Returns:
             Generator[pandas.DataFrame]: each df is the next page in the manual
         """
-        for p in nav.pages(self._year):
+        for p in nav.pages(self._year, **self._kwargs):
             logging.debug("Moving to next page, %s", p)
             self._page_name = p
             yield get_df(p)

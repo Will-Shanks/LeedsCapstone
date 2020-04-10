@@ -18,6 +18,7 @@ def pages(year, brightness='70',
     Yields:
         str: filepath of next page in manual
     """
+    logging.basicConfig(level=logging.DEBUG)
     logging.debug(
         "finding files for year %s, at brightness %s, with basedir %s",
         year, brightness, basepath)
@@ -37,8 +38,11 @@ def pages(year, brightness='70',
 
 if __name__ == '__main__':
     import sys
-    if len(sys.argv) != 2:
-        print("Error: usage: {} year".format(__file__))
+    if len(sys.argv) <= 2:
+        print("Error: usage: {} year [basepath]".format(__file__))
         sys.exit(1)
-    print(list(pages(sys.argv[1])))
+    if len(sys.argv) == 3:
+        print(list(pages(sys.argv[1], basepath=sys.argv[2])))
+    else:
+        print(list(pages(sys.argv[1])))
     sys.exit(0)
