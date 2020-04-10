@@ -39,7 +39,7 @@ class Plot:
         self._miny = sys.maxsize
         self._maxy = 0
 
-    def setImage(self, image):
+    def set_image(self, image):
         """Sets the image for plot to be overlayed over
 
         Args:
@@ -49,7 +49,7 @@ class Plot:
         # FIXME handle case where image exists, but is not a valid image file
         self._image = np.array(Image.open(image), dtype=np.uint8)
 
-    def addRectangle(self, p1, p2, color='r'):
+    def add_rectangle(self, p1, p2, color='r'):
         """adds a rectangle to the plot
 
         Args:
@@ -130,7 +130,7 @@ def _main():
 
     if len(sys.argv) >= 3:
         try:
-            plot.setImage(sys.argv[2])
+            plot.set_image(sys.argv[2])
         except FileNotFoundError:
             logging.warning("File %s not found", sys.argv[2])
 
@@ -167,12 +167,12 @@ def _main():
             logging.debug("Not sure what color to draw word '%s'",
                           text)
 
-        plot.addRectangle([x1, y1], [x2, y2], color)
+        plot.add_rectangle([x1, y1], [x2, y2], color)
 
     plot.show()
     return 0
 
 
 if __name__ == "__main__":
-    #logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.DEBUG)
     sys.exit(_main())
