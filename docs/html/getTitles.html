@@ -35,13 +35,16 @@
 <p>Parses through a manual from start to finish, finding all the company names</p>
 <p class="rubric">Example</p>
 <p>./getTitles.py 1930</p>
-<dl class="function">
+<dl class="py function">
 <dt id="getTitles.get_titles">
-<code class="sig-prename descclassname">getTitles.</code><code class="sig-name descname">get_titles</code><span class="sig-paren">(</span><em class="sig-param">year</em><span class="sig-paren">)</span><a class="headerlink" href="#getTitles.get_titles" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">getTitles.</code><code class="sig-name descname">get_titles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">year</span></em>, <em class="sig-param"><span class="n">basepath</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#getTitles.get_titles" title="Permalink to this definition">¶</a></dt>
 <dd><p>prints company names for the given year</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>year</strong> (<em>str</em>) – year of the manual to be parsed</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>year</strong> (<em>str</em>) – year of the manual to be parsed</p></li>
+<li><p><strong>basepath</strong> (<em>str</em><em>, </em><em>optional</em>) – filepath to look for OCRrun dirs</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -99,7 +102,7 @@
       &copy;2020, Remy Dahlke, Kevin Eastman, Jie Wang, Joshua Khoo,.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.3</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
