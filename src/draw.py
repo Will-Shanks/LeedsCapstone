@@ -8,7 +8,6 @@ Example:
     $ ./draw.py ocroutput.day [pagescan.tif]
 """
 
-import csv
 import logging
 import sys
 
@@ -16,6 +15,8 @@ import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
+
+import dayToDF
 
 
 class Plot:
@@ -38,7 +39,7 @@ class Plot:
         self._miny = sys.maxsize
         self._maxy = 0
 
-    def setImage(self, image):
+    def set_image(self, image):
         """Sets the image for plot to be overlayed over
 
         Args:
@@ -48,7 +49,7 @@ class Plot:
         # FIXME handle case where image exists, but is not a valid image file
         self._image = np.array(Image.open(image), dtype=np.uint8)
 
-    def addRectangle(self, p1, p2, color='r'):
+    def add_rectangle(self, p1, p2, color='r'):
         """adds a rectangle to the plot
 
         Args:
@@ -129,7 +130,7 @@ def _main():
 
     if len(sys.argv) >= 3:
         try:
-            plot.setImage(sys.argv[2])
+            plot.set_image(sys.argv[2])
         except FileNotFoundError:
             logging.warning("File %s not found", sys.argv[2])
 
@@ -139,49 +140,36 @@ def _main():
         print("Usage: {} <OCR .day filepath> [<filepath to page scan>]".format(
             __file__))
         return 1
-    if not sys.argv[1].endswith('.day'):
-        logging.error("Incorrect file format detected")
-        print("Usage: {} <OCR .day filepath> [<filepath to page scan>]"
-              .format(__file__))
-        return 2
-    try:
-        with open(sys.argv[1], newline='') as fh:
-            reader = csv.reader(fh, delimiter=',')
-            for line in reader:
-                text = line[15]
+    df = dayToDF.get_df(sys.argv[1])
+    for _, word in df.iterrows():
+        text = word['text']
+        x1 = word['xmin']
+        x2 = word['xmax']
+        y1 = word['ymin']
+        y2 = word['ymax']
 
-                # ignore empty words
-                if text == '':
-                    continue
+        # get color
+        # set default to red (shouldn't occur)
+        color = "r"
+        # check if all caps
+        if text.isupper():
+            color = "g"
+        # check if all lowercase
+        elif text.islower():
+            color = "b"
+        # check if only first letter is capatilized
+        elif text.istitle():
+            color = "m"
+        # check if is a number
+        elif text.replace('.', '', 1).isdigit():
+            color = "c"
+        else:
+            logging.debug("Not sure what color to draw word '%s'",
+                          text)
 
-                # get word bounding box in pixels
-                x1, x2, y1, y2 = [((int(i) * 400) / 1440) for i in line[1:5]]
+        plot.add_rectangle([x1, y1], [x2, y2], color)
 
-                # get color
-                # set default to red (shouldn't occur)
-                color = "r"
-                # check if all caps
-                if text.isupper():
-                    color = "g"
-                # check if all lowercase
-                elif text.islower():
-                    color = "b"
-                # check if only first letter is capatilized
-                elif text.istitle():
-                    color = "m"
-                # check if is a number
-                elif text.replace('.', '', 1).isdigit():
-                    color = "c"
-                else:
-                    logging.debug("Not sure what color to draw word '%s'",
-                                  text)
-
-                plot.addRectangle([x1, y1], [x2, y2], color)
-
-        plot.show()
-    except FileNotFoundError:
-        logging.error("OCR data file %s not found", sys.argv[1])
-        return 1
+    plot.show()
     return 0
 
 
