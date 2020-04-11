@@ -257,6 +257,9 @@ class DayReader:
     page end. This is potentially usefull for parsing, as sometimes a company
     info wraps to the next page but it does not appear they will wrap to a
     different column style page
+
+    Note:
+        Will raise an FileNotFoundError if no day files are found
     """
     def __init__(self, year, **kwargs):
         logging.debug("Creating DayReader for year %s", year)
@@ -264,7 +267,10 @@ class DayReader:
         self._year = year  # manual year to look at
         self._pages = self._next_page()  # page df generator
         self._page_name = None  # name of current page
-        self._df = next(self._pages)  # current page df
+        try:
+            self._df = next(self._pages)  # current page df
+        except StopIteration:
+            raise FileNotFoundError("No day files were found")
         self._cols = self._df['col'].max() + 1  # num cols on curr page
 
     def __iter__(self):

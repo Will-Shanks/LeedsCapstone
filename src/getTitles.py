@@ -21,10 +21,15 @@ def get_titles(year, basepath=None):
     """
     # create a day file reader
     dr = None
-    if basepath is not None:
-        dr = dayToDF.DayReader(year, basepath=basepath)
-    else:
-        dr = dayToDF.DayReader(year)
+    try:
+        if basepath is not None:
+            dr = dayToDF.DayReader(year, basepath=basepath)
+        else:
+            dr = dayToDF.DayReader(year)
+    except FileNotFoundError as err:
+        logging.fatal("Could not create DayReader: %s", err)
+        return 1
+
     # find out how many cols are on first page
     for cols, lines in dr:
         logging.info("Parsing %d column pages, starting with page %s",
@@ -52,9 +57,7 @@ def get_titles(year, basepath=None):
             # iter to next section so can parse rest of manual
             for _ in lines():
                 pass
-
-        # In next section, update number of cols on page
-        cols = dr.cols()
+    return 0
 
 
 if __name__ == '__main__':
@@ -62,5 +65,4 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         logging.error("Usage: %s YEAR", __file__)
         sys.exit(1)
-    get_titles(*sys.argv[1:])
-    sys.exit(0)
+    sys.exit(get_titles(*sys.argv[1:]))

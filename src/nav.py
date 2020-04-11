@@ -10,6 +10,9 @@ def pages(year, brightness='70',
           basepath='/scratch/summit/diga9728/Moodys/Industrials/'):
     """Iterates over all files in a year, for a certain brightness
 
+    Note:
+        Looks for day files in  <basedir>/OCRrun<year>/[0-9][0-9][0-9]/
+
     Args:
         year (str): year of manuals to iterate through
         brightness (str, optional): brightness level of day files to use
@@ -20,7 +23,7 @@ def pages(year, brightness='70',
     """
     logging.basicConfig(level=logging.DEBUG)
     logging.debug(
-        "finding files for year %s, at brightness %s, with basedir %s",
+        "Looking for day files from year %s, at brightness %s, in %s",
         year, brightness, basepath)
     # find all dirs that might contain .day files
     dirs = sorted(glob.glob(basepath + 'OCRrun' + year + '/[0-9][0-9][0-9]/'))
