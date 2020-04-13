@@ -63,14 +63,11 @@ def _get_cols(df):
         output: list [int] of x values that are not in any words
         """
         # know edge of left most word is not a gap, so skip it
-        gaps = list(range(int(df['xmin'].min() + 1), int(df['xmax'].max())))
+        #gaps = list(range(int(df['xmin'].min() + 1), int(df['xmax'].max())))
 
         # remove each column of pixels where text exists
-        for _, word in df.iterrows():
-            for i in gaps[:]:
-                if word['xmin'] <= i <= word['xmax']:
-                    gaps.remove(i)
-                    continue
+        gaps = (i for i in range(int(df['xmin'].min() + 1), int(df['xmax'].max())) if not df.loc[(df['xmin'] <= i) & (df['xmax'] >= i)].empty)
+
         return gaps
 
     def col_edges(df):
@@ -94,17 +91,12 @@ def _get_cols(df):
     # for each column, update col value for words in that column
     for i, column in enumerate(col_edges(df)):
         # iter through words not already assigned to a col
-        for j, word in df.loc[df['col'] == -1].iterrows():
-            # if word in column, update its col value
-            if word['xmin'] >= column[0] and word['xmax'] <= column[1]:
-                df.loc[j, 'col'] = i
-
+        df.loc[(df['col'] == -1) & (df['xmin'] >= column[0]) & (df['xmax'] <= column[1]), 'col'] = i
     # check if any cols have a really small number of words
     # if they do, are probably mistakes from OCR so drop col
     for i in range(df['col'].max() + 1):
         col = df[df['col'] == i]
-        # FIXME shouldn't use a magic number here
-        if len(col) < 100:
+        if len(col) < len(df)/10:
             df = df.drop(col.index)
             df.loc[df['col'] > i, 'col'] -= 1
     return df
