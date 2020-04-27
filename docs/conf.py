@@ -19,9 +19,11 @@ sys.path.insert(0, os.path.abspath('./src'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'LeedsCapstone'
-copyright = '2020, test'
-author = 'test'
+project = 'Leeds Capstone'
+copyright = '2020, Remy Dahlke, Kevin Eastman, Jie Wang, Joshua Khoo,'
+' Zijun Liu, Qinglu Sun, Will Shanks, Zuodong Wang'
+author = 'Remy Dahlke, Kevin Eastman, Jie Wang, Joshua Khoo, Zijun Liu,'
+' Qinglu Sun, Will Shanks, Zuodong Wang'
 
 
 master_doc = 'index'

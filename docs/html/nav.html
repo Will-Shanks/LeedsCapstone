@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Python Module Index &#8212; Leeds Capstone  documentation</title>
+    <title>nav module &#8212; Leeds Capstone  documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -14,18 +14,11 @@
     <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
-
-    <script>
-      DOCUMENTATION_OPTIONS.COLLAPSE_INDEX = true;
-    </script>
-
 
   </head><body>
   
@@ -37,55 +30,32 @@
 
           <div class="body" role="main">
             
+  <div class="section" id="module-nav">
+<span id="nav-module"></span><h1>nav module<a class="headerlink" href="#module-nav" title="Permalink to this headline">¶</a></h1>
+<p>Utility functions to simplify navigating the filesystem</p>
+<dl class="py function">
+<dt id="nav.pages">
+<code class="sig-prename descclassname">nav.</code><code class="sig-name descname">pages</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">year</span></em>, <em class="sig-param"><span class="n">brightness</span><span class="o">=</span><span class="default_value">'70'</span></em>, <em class="sig-param"><span class="n">basepath</span><span class="o">=</span><span class="default_value">'/scratch/summit/diga9728/Moodys/Industrials/'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#nav.pages" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterates over all files in a year, for a certain brightness</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Looks for day files in  &lt;basedir&gt;/OCRrun&lt;year&gt;/[0-9][0-9][0-9]/</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>year</strong> (<em>str</em>) – year of manuals to iterate through</p></li>
+<li><p><strong>brightness</strong> (<em>str</em><em>, </em><em>optional</em>) – brightness level of day files to use</p></li>
+<li><p><strong>basepath</strong> (<em>str</em><em>, </em><em>optional</em>) – filepath to where dirs with day files are</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yields</dt>
+<dd class="field-even"><p><em>str</em> – filepath of next page in manual</p>
+</dd>
+</dl>
+</dd></dl>
 
-   <h1>Python Module Index</h1>
-
-   <div class="modindex-jumpbox">
-   <a href="#cap-d"><strong>d</strong></a> | 
-   <a href="#cap-g"><strong>g</strong></a> | 
-   <a href="#cap-n"><strong>n</strong></a> | 
-   <a href="#cap-o"><strong>o</strong></a>
-   </div>
-
-   <table class="indextable modindextable">
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-d"><td></td><td>
-       <strong>d</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="dayToDF.html#module-dayToDF"><code class="xref">dayToDF</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="draw.html#module-draw"><code class="xref">draw</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-g"><td></td><td>
-       <strong>g</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="getTitles.html#module-getTitles"><code class="xref">getTitles</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-n"><td></td><td>
-       <strong>n</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="nav.html#module-nav"><code class="xref">nav</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-o"><td></td><td>
-       <strong>o</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="oneCol.html#module-oneCol"><code class="xref">oneCol</code></a></td><td>
-       <em></em></td></tr>
-   </table>
+</div>
 
 
           </div>
@@ -141,6 +111,9 @@
       Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
+      |
+      <a href="_sources/nav.rst.txt"
+          rel="nofollow">Page source</a>
     </div>
 
     

@@ -4,14 +4,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>getTitles module &#8212; LeedsCapstone  documentation</title>
+    <title>getTitles module &#8212; Leeds Capstone  documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
    
@@ -32,16 +32,19 @@
             
   <div class="section" id="module-getTitles">
 <span id="gettitles-module"></span><h1>getTitles module<a class="headerlink" href="#module-getTitles" title="Permalink to this headline">¶</a></h1>
-<p>prints company names in text generated from 1 col pages</p>
+<p>Parses through a manual from start to finish, finding all the company names</p>
 <p class="rubric">Example</p>
-<p>$ ./getTitles.py /path/to/.day […]</p>
-<dl class="function">
-<dt id="getTitles.main">
-<code class="sig-prename descclassname">getTitles.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><em class="sig-param">args</em><span class="sig-paren">)</span><a class="headerlink" href="#getTitles.main" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prints out company names found in given .day files</p>
+<p>./getTitles.py 1930</p>
+<dl class="py function">
+<dt id="getTitles.get_titles">
+<code class="sig-prename descclassname">getTitles.</code><code class="sig-name descname">get_titles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">year</span></em>, <em class="sig-param"><span class="n">basepath</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#getTitles.get_titles" title="Permalink to this definition">¶</a></dt>
+<dd><p>prints company names for the given year</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>args</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – list of filepaths for .day files</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>year</strong> (<em>str</em>) – year of the manual to be parsed</p></li>
+<li><p><strong>basepath</strong> (<em>str</em><em>, </em><em>optional</em>) – filepath to look for OCRrun dirs</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -55,7 +58,7 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">LeedsCapstone</a></h1>
+<h1 class="logo"><a href="index.html">Leeds Capstone</a></h1>
 
 
 
@@ -82,7 +85,7 @@
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -96,10 +99,10 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020, test.
+      &copy;2020, Remy Dahlke, Kevin Eastman, Jie Wang, Joshua Khoo,.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

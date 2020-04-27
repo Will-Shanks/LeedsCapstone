@@ -9,6 +9,8 @@ import sys
 import numpy as np
 import pandas as pd
 
+import nav
+
 # import draw
 
 
@@ -61,14 +63,11 @@ def _get_cols(df):
         output: list [int] of x values that are not in any words
         """
         # know edge of left most word is not a gap, so skip it
-        gaps = list(range(int(df['xmin'].min() + 1), int(df['xmax'].max())))
-
         # remove each column of pixels where text exists
-        for _, word in df.iterrows():
-            for i in gaps[:]:
-                if word['xmin'] <= i <= word['xmax']:
-                    gaps.remove(i)
-                    continue
+        gaps = (i for i in range(int(df['xmin'].min() + 1),
+                                 int(df['xmax'].max()))
+                if df.loc[(df['xmin'] <= i) & (df['xmax'] >= i)].empty)
+
         return gaps
 
     def col_edges(df):
@@ -92,11 +91,15 @@ def _get_cols(df):
     # for each column, update col value for words in that column
     for i, column in enumerate(col_edges(df)):
         # iter through words not already assigned to a col
-        for j, word in df.loc[df['col'] == -1].iterrows():
-            # if word in column, update its col value
-            if word['xmin'] >= column[0] and word['xmax'] <= column[1]:
-                df.loc[j, 'col'] = i
-
+        df.loc[(df['col'] == -1) & (df['xmin'] >= column[0])
+               & (df['xmax'] <= column[1]), 'col'] = i
+    # check if any cols have a really small number of words
+    # if they do, are probably mistakes from OCR so drop col
+    for i in range(df['col'].max() + 1):
+        col = df[df['col'] == i]
+        if len(col) < len(df) / 10:
+            df = df.drop(col.index)
+            df.loc[df['col'] > i, 'col'] -= 1
     return df
 
 
@@ -133,13 +136,13 @@ def _get_lines(df):
         if (l[0] <= miny <= l[1]) and maxy >= l[1]:
             return True
         # word starts in interval, but ends after it
-        elif l[0] >= miny and (l[0] <= maxy <= l[1]):
+        if l[0] >= miny and (l[0] <= maxy <= l[1]):
             return True
         # word starts before interval and ends after it
-        elif l[0] <= miny and maxy <= l[1]:
+        if l[0] <= miny and maxy <= l[1]:
             return True
         # word contained in interval
-        elif l[0] >= miny and maxy >= l[1]:
+        if l[0] >= miny and maxy >= l[1]:
             return True
         return False
 
@@ -200,16 +203,21 @@ def get_df(fn):
             with rows: {x,y}{min,max}, col, line, word
             where col, line, and word give the ordering on the page
             e.x: col=1,line=2,word=0 is the first word of the third line of
-                the second column
+            the second column
     """
     # read in .day file
     df = _read_day(fn)
+    df = df.astype({'xmin': 'int32', 'xmax': 'int32', 'ymin': 'int32',
+                    'ymax': 'int32', 'text': 'str'})
     # split into columns
     df = _get_cols(df)
     # split into lines
     df = _get_lines(df)
     # figure out order of words
     df = _get_word_order(df)
+    df = df.astype({'col': 'int32', 'line': 'int32', 'word': 'int32',
+                    'xmin': 'int32', 'xmax': 'int32', 'ymin': 'int32',
+                    'ymax': 'int32', 'text': 'str'})
     return df
 
 
@@ -230,11 +238,94 @@ def iter_df(df):
             line = col[col['line'] == j]
             # add words to string in order
             cur_line = line[line['word'] == 0].iloc[0]['text']
-            for k in range(line['word'].max() + 1):
+            for k in range(1, line['word'].max() + 1):
                 word = line[line['word'] == k]
                 cur_line += ' ' + word.iloc[0]['text']
             # return a line at a time
             yield cur_line
+
+
+class DayReader:
+    """Manages complicated day file parsing
+
+    Can parse through a years day files, splitting by change in # of cols, not
+    page end. This is potentially usefull for parsing, as sometimes a company
+    info wraps to the next page but it does not appear they will wrap to a
+    different column style page
+
+    Note:
+        Will raise an FileNotFoundError if no day files are found
+    """
+    def __init__(self, year, **kwargs):
+        logging.debug("Creating DayReader for year %s", year)
+        self._kwargs = kwargs  # for passing options to nav
+        self._year = year  # manual year to look at
+        self._pages = self._next_page()  # page df generator
+        self._page_name = None  # name of current page
+        try:
+            self._df = next(self._pages)  # current page df
+        except StopIteration:
+            raise FileNotFoundError("No day files were found")
+        self._cols = self._df['col'].max() + 1  # num cols on curr page
+
+    def __iter__(self):
+        while self._df is not None:
+            #self._cols = self._df['col'].max() + 1  # num cols on curr page
+            yield self._cols, self._lines
+
+    def _lines(self):
+        """yield manual line by line, until change in # of cols
+
+        Yields:
+            str: next line in manual
+
+        Note:
+            When the end of a page is reached, if the next page has a different
+            number of columns this method will return None instead of
+            continuing, but can be called again immediately
+        """
+        # iter over lines in current page
+        for l in iter_df(self._df):
+            yield l
+        # iter over pages in order
+        for page in self._pages:
+            self._df = page
+            cols = self._df['col'].max() + 1
+            # check if new page has same number of cols as last
+            if self._cols != cols:
+                # if it doesn't update self._cols and return
+                logging.debug(
+                    "End of pages with %d columns, next page has %d columns",
+                    self._cols, cols)
+                self._cols = cols
+                return
+            # iter over lines in page
+            for l in iter_df(page):
+                yield l
+        # Out of pages, so set everything to None to stop weird behavior
+        self._cols = None
+        self._page_name = None
+        self._df = None
+        self._pages = None
+
+    def page(self):
+        """Returns the current page filepath
+
+        Returns:
+            str: filepath for current page
+        """
+        return self._page_name
+
+    def _next_page(self):
+        """Moves on to next page in manual
+
+        Returns:
+            Generator[pandas.DataFrame]: each df is the next page in the manual
+        """
+        for p in nav.pages(self._year, **self._kwargs):
+            logging.debug("Moving to next page, %s", p)
+            self._page_name = p
+            yield get_df(p)
 
 
 def _main(args):
