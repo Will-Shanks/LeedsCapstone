@@ -270,7 +270,6 @@ class DayReader:
 
     def __iter__(self):
         while self._df is not None:
-            #self._cols = self._df['col'].max() + 1  # num cols on curr page
             yield self._cols, self._lines
 
     def _lines(self):
