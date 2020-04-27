@@ -63,10 +63,10 @@ def _get_cols(df):
         output: list [int] of x values that are not in any words
         """
         # know edge of left most word is not a gap, so skip it
-        #gaps = list(range(int(df['xmin'].min() + 1), int(df['xmax'].max())))
-
         # remove each column of pixels where text exists
-        gaps = (i for i in range(int(df['xmin'].min() + 1), int(df['xmax'].max())) if not df.loc[(df['xmin'] <= i) & (df['xmax'] >= i)].empty)
+        gaps = (i for i in range(int(df['xmin'].min() + 1),
+                                 int(df['xmax'].max()))
+                if df.loc[(df['xmin'] <= i) & (df['xmax'] >= i)].empty)
 
         return gaps
 
@@ -91,12 +91,13 @@ def _get_cols(df):
     # for each column, update col value for words in that column
     for i, column in enumerate(col_edges(df)):
         # iter through words not already assigned to a col
-        df.loc[(df['col'] == -1) & (df['xmin'] >= column[0]) & (df['xmax'] <= column[1]), 'col'] = i
+        df.loc[(df['col'] == -1) & (df['xmin'] >= column[0])
+               & (df['xmax'] <= column[1]), 'col'] = i
     # check if any cols have a really small number of words
     # if they do, are probably mistakes from OCR so drop col
     for i in range(df['col'].max() + 1):
         col = df[df['col'] == i]
-        if len(col) < len(df)/10:
+        if len(col) < len(df) / 10:
             df = df.drop(col.index)
             df.loc[df['col'] > i, 'col'] -= 1
     return df
@@ -135,13 +136,13 @@ def _get_lines(df):
         if (l[0] <= miny <= l[1]) and maxy >= l[1]:
             return True
         # word starts in interval, but ends after it
-        elif l[0] >= miny and (l[0] <= maxy <= l[1]):
+        if l[0] >= miny and (l[0] <= maxy <= l[1]):
             return True
         # word starts before interval and ends after it
-        elif l[0] <= miny and maxy <= l[1]:
+        if l[0] <= miny and maxy <= l[1]:
             return True
         # word contained in interval
-        elif l[0] >= miny and maxy >= l[1]:
+        if l[0] >= miny and maxy >= l[1]:
             return True
         return False
 
@@ -206,6 +207,8 @@ def get_df(fn):
     """
     # read in .day file
     df = _read_day(fn)
+    df = df.astype({'xmin': 'int32', 'xmax': 'int32', 'ymin': 'int32',
+                    'ymax': 'int32', 'text': 'str'})
     # split into columns
     df = _get_cols(df)
     # split into lines
