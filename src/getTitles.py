@@ -10,6 +10,7 @@ import sys
 
 import dayToDF
 import oneCol
+import two_col
 
 
 def get_titles(year, basepath=None):
@@ -43,13 +44,13 @@ def get_titles(year, basepath=None):
             if titles is not None:
                 print(titles)
         elif cols == 2:
-            # Not implemented yet, so just get iter to next section
-            for _ in lines():
-                pass
+            titles = two_col.get_titles(lines)
+            if titles is not None:
+                print(titles)
         elif cols == 3:
-            # Not implemented yet, so just get iter to next section
-            for _ in lines():
-                pass
+            titles = two_col.get_titles(lines)
+            if titles is not None:
+                print(titles)
         else:
             # All pages are 1,2, or 3 columns, shouldn't be able to get here
             logging.error("Page %s has %d columns, don't know what to do",
