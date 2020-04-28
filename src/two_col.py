@@ -13,7 +13,12 @@ def get_titles(lines):
     """
     titles = []
     for line in lines():
-        lastword = line.split()[-1]
+        # split line into words
+        lastword = line.split()
+        # check line contains at least a word
+        if not lastword:
+            continue
+        lastword = lastword[-1]
         if ("incorporated" in line.lower()
                 or "Controlled" in line
                 or "Organized" in line
