@@ -1,6 +1,6 @@
  # coding = utf8
 '''
-    Arthor: Zijun Liu
+    Arthor: Zijun Liu, Jie Wang
 '''
 import os
 import json
